@@ -1,0 +1,9 @@
+
+             PGM       PARM(&PHP &IFSPATH)
+
+             DCL        VAR(&PHP) TYPE(*CHAR) LEN(200)
+             DCL        VAR(&IFSPATH) TYPE(*CHAR) LEN(200)
+
+             STRQSH    CMD(&PHP + ' ' + &IFSPATH + '/console.php app:benchmark')
+
+             ENDPGM

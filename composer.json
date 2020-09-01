@@ -1,0 +1,16 @@
+{
+    "require": {
+        "php": "^7.1.0",
+        "ext-bcmath": "*",
+        "zendtech/ibmitoolkit": "^1.8",
+        "symfony/console": "^5.1",
+        "laminas/laminas-servicemanager": "^3.4",
+        "laminas/laminas-db": "^2.11",
+        "symfony/process": "^5.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Console\\": "src"
+        }
+    }
+}
