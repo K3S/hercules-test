@@ -36,6 +36,11 @@ final class BenchmarkCommand extends Command
     private $toolkit;
 
     /**
+     * @var int
+     */
+    private $numberOfProgramCalls = 0;
+
+    /**
      * BenchmarkCommand constructor.
      * @param Adapter|AdapterInterface $adapter
      * @param Toolkit|ToolkitInterface $toolkit
@@ -79,25 +84,12 @@ final class BenchmarkCommand extends Command
         $this->input = $input;
         $this->output = $output;
 
-        $this->cleanUp();
-
-        // Get test data to insert
-        $lifters = $this->getLifters();
-        $liftWeight = 80;
-
         // Record start time
         $startTime = microtime(true);
         $this->output->writeln('Start time: ' . $startTime);
 
-        // Call program once per lifter/row
-        $numberOfProgramCalls = 0;
-        foreach ($lifters as $lifter) {
-            $this->toolkit->pgmCall('HERC_C', 'HERC', [
-                $this->toolkit->AddParameterChar('both', 25, 'Lifter', 'LIFTER', $lifter),
-                $this->toolkit->AddParameterPackDec('both', 3, 0, 'Lift Weight', 'LIFT_WGT', $liftWeight++),
-                $this->toolkit->AddParameterChar('both', 14, 'Lift Time', 'LIFT_TIME', (new \DateTime('now'))->format('Y-m-d H:i:s'))
-            ]);
-            $numberOfProgramCalls++;
+        for ($i = 0; $i <= 15; $i++) {
+            $this->insertData();
         }
 
         // Record end time
@@ -109,10 +101,31 @@ final class BenchmarkCommand extends Command
         $this->output->writeln("Duration was $duration seconds");
 
         // Calculate average duration (seconds per program call)
-        $averageDuration = bcdiv($duration, (string)$numberOfProgramCalls, 25);
+        $averageDuration = bcdiv($duration, (string)$this->numberOfProgramCalls, 25);
         $this->output->writeLn("Average duration was $averageDuration seconds");
+        $this->output->writeln("Number of program calls: " . $this->numberOfProgramCalls);
 
         return self::SUCCESS;
+    }
+
+    private function insertData()
+    {
+        $this->cleanUp();
+
+        // Get test data to insert
+        $lifters = $this->getLifters();
+        $liftWeight = 80;
+
+        // Call program once per lifter/row
+        foreach ($lifters as $lifter) {
+            $this->toolkit->pgmCall('HERC_C', 'HERC', [
+                $this->toolkit->AddParameterChar('both', 25, 'Lifter', 'LIFTER', $lifter),
+                $this->toolkit->AddParameterPackDec('both', 3, 0, 'Lift Weight', 'LIFT_WGT', $liftWeight++),
+                $this->toolkit->AddParameterChar('both', 14, 'Lift Time', 'LIFT_TIME', (new \DateTime('now'))->format('Y-m-d H:i:s'))
+            ]);
+
+            $this->numberOfProgramCalls++;
+        }
     }
 
     /**
@@ -120,58 +133,7 @@ final class BenchmarkCommand extends Command
      */
     private function getLifters(): array
     {
-        return [
-            'JUPITER',
-            'MARS',
-            'QUIRINUS',
-            'CARMENTIS',
-            'CERES',
-            'FALACER',
-            'FLORA',
-            'FURRINA',
-            'PALATUA',
-            'POMONA',
-            'PORTUNUS',
-            'VULCAN',
-            'VOLTURNUS',
-            'JANUS',
-            'SATURN',
-            'GENIUS',
-            'MERCURY',
-            'APOLLO',
-            'NEPTUNE',
-            'SOL',
-            'ORCUS',
-            'LIBER',
-            'TELLUS',
-            'JUNO',
-            'LUNA',
-            'DIANA',
-            'MINERVA',
-            'VENUS',
-            'VESTA',
-            'BACCHUS',
-            'DIANA',
-            'DECIMA',
-            'HORA',
-            'INTERCIDONA',
-            'LUA',
-            'MITHRAS',
-            'MENA',
-            'NEPTUNE',
-            'NECESSITAS',
-            'ORCUS',
-            'PLUTO',
-            'PALATUA',
-            'ROMA',
-            'TERMINUS',
-            'TIBERINUS',
-            'TRIVIA',
-            'VICTORIA',
-            'VIRTUS',
-            'TELLUS',
-            'TEMPESTAS',
-        ];
+        return require __DIR__ . '/deities.php';
     }
 
     /**

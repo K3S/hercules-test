@@ -1,7 +1,8 @@
 # Install on customer server
 # Restore
-system "RSTOBJ OBJ(*ALL) SAVLIB(QGPL) DEV(*SAVF) SAVF(QGPL/HERCSAVF) MBROPT(*ALL) ALWOBJDIF(*ALL) RSTLIB(QGPL)";
-system "RSTLIB SAVLIB(WEB_5MOD) DEV(*SAVF) SAVF(QGPL/WEBLIB5MOD) MBROPT(*ALL) ALWOBJDIF(*ALL) RSTLIB(WEB_5MOD)";
+system -v "RSTOBJ OBJ(*ALL) SAVLIB(QGPL) DEV(*SAVF) SAVF(QGPL/HERCSAVF) MBROPT(*ALL) ALWOBJDIF(*ALL) RSTLIB(QGPL)";
+system -v "RSTLIB SAVLIB(HERC) DEV(*SAVF) SAVF(QGPL/HERCSAVFL) MBROPT(*ALL) ALWOBJDIF(*ALL) RSTLIB(HERC)";
 
 # Restore IFS objects
-system "RST DEV('/qsys.lib/qgpl.lib/hercsavfi.file') OBJ(('*' *INCLUDE '/usr/local/k3s/utilities/hercules-test'))";
+system -v "CRTDIR DIR('/usr/local/k3s/utilities/hercules-test')";
+system -v "RST DEV('/qsys.lib/qgpl.lib/hercsavfi.file') OBJ(('/usr/local/k3s/utilities'))";

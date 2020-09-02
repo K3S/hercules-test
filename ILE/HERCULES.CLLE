@@ -1,9 +1,17 @@
 
-             PGM       PARM(&PHP &IFSPATH)
+             PGM       PARM(&PHP &IFSPATH &OUTF)
 
-             DCL        VAR(&PHP) TYPE(*CHAR) LEN(200)
-             DCL        VAR(&IFSPATH) TYPE(*CHAR) LEN(200)
+             DCL       VAR(&PHP) TYPE(*CHAR) LEN(200)
+             DCL       VAR(&IFSPATH) TYPE(*CHAR) LEN(200)
+             DCL       VAR(&OUTF) TYPE(*CHAR) LEN(200)
+             DCL       VAR(&DBUSER) TYPE(*CHAR) LEN(10)
+             DCL       VAR(&DBPWD) TYPE(*CHAR) LEN(10)
 
-             STRQSH    CMD(&PHP + ' ' + &IFSPATH + '/console.php app:benchmark')
+             DCL       VAR(&CMND) TYPE(*CHAR) LEN(600)
+
+             CHGVAR    VAR(&PHP) VALUE('HERC_USER=' *CAT %TRIM(&DBUSER) *BCAT 'HERC_PWD=' *CAT %TRIM(&DBPWD) *BCAT &PHP)
+             CHGVAR    VAR(&CMND) VALUE(%TRIM(&PHP) *BCAT %TRIM(&IFSPATH) *CAT '/console.php app:benchmark >' *BCAT %TRIM(&OUTF)) 
+
+             STRQSH    CMD(&CMND)
 
              ENDPGM

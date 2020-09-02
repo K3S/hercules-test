@@ -12,15 +12,18 @@ use Laminas\ServiceManager\ServiceManager;
 use Symfony\Component\Console\Application;
 use ToolkitApi\Toolkit;
 
+$username = $_SERVER['HERC_USER'];
+$password = $_SERVER['HERC_PWD'];
+
 $databaseConfig = [
-    'dsn' => 'odbc:DSN=*LOCAL;UID=kingston;PWD=finder22;DBQ=, QTEMP QGPL;NAM=1;CMT=1;',
+    'dsn' => 'odbc:DSN=*LOCAL;UID=' . $username . ';PWD=' . $password . ';DBQ=, QTEMP QGPL HERC;NAM=1;CMT=1;',
     'driver' => 'Pdo',
     'platform' => 'IbmDb2',
     'platform_options' => [
         'quote_identifiers' => true,
     ],
-    'username' => 'kingston',
-    'password' => 'finder22',
+    'username' => $username,
+    'password' => $password,
 ];
 
 $toolkitConfig = [
@@ -32,9 +35,7 @@ $toolkitConfig = [
     'stateless' => true,
 ];
 
-
 $appConfig = [
-    // Database configuration
     'db' => $databaseConfig,
     'toolkit' => $toolkitConfig,
 ];
@@ -42,29 +43,29 @@ $appConfig = [
 $serviceManagerConfig = [
     'factories' => [
 
-            // Database adapter
-            Adapter::class => AdapterFactory::class,
+        // Database adapter
+        Adapter::class => AdapterFactory::class,
 
-            // IBM i Toolkit
-            Toolkit::class => function (ContainerInterface $container) use ($toolkitConfig) {
-                /** @var Adapter $adapter */
-                $adapter = $container->get(Adapter::class);
+        // IBM i Toolkit
+        Toolkit::class => function (ContainerInterface $container) use ($toolkitConfig) {
+            /** @var Adapter $adapter */
+            $adapter = $container->get(Adapter::class);
 
-                $toolkit = new Toolkit(
-                    $adapter->getDriver()->getConnection()->getResource(),
-                    null,
-                    null,
-                    'pdo'
-                );
+            $toolkit = new Toolkit(
+                $adapter->getDriver()->getConnection()->getResource(),
+                null,
+                null,
+                'pdo'
+            );
 
-                $toolkit->setOptions($toolkitConfig);
+            $toolkit->setOptions($toolkitConfig);
 
-                return $toolkit;
-            },
+            return $toolkit;
+        },
 
-            Application::class => ApplicationFactory::class,
-            BenchmarkCommand::class => [BenchmarkCommand::class, 'fromContainer'],
-        ]
+        Application::class => ApplicationFactory::class,
+        BenchmarkCommand::class => [BenchmarkCommand::class, 'fromContainer'],
+    ]
 ];
 
 $serviceManager = new ServiceManager($serviceManagerConfig);
