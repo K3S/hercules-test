@@ -4,9 +4,9 @@ How much can you lift?
 # Installation
 ### FTP Save File to server
 ```
-ftp <server ip>
-bin
-put HERCSAVF.SAVF
+$ ftp <server ip>
+$ bin
+$ put HERCSAVF.SAVF
 ```
 
 ### Restore objects from save files
