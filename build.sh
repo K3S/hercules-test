@@ -3,7 +3,7 @@
 BASEDIR=$(pwd);
 DDL=$(cat "${BASEDIR}/DDL/LIFTING.SQL");
 LIBRARY="HERC";
-UTILITIESDIR="/usr/local/k3s/utilities";
+UTILITIESDIR="/usr/local";
 
 # Copy IFS objects to utilities directory
 cp -rf "${BASEDIR}" "${UTILITIESDIR}";
