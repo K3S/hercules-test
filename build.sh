@@ -24,9 +24,9 @@ system "DLTOBJ OBJ(QGPL/HERCSAVF) OBJTYPE(*FILE)";
 # Create save files
 system -v "CRTSAVF FILE(QGPL/HERCSAVFL) TEXT('Hercules')";
 system -v "CLRSAVF FILE(QGPL/HERCSAVFL)";
-system -v "CRTSAVF FILE(QGPL/HERCSAVFI) TEXT('Hercules')";
+system -v "CRTSAVF FILE(QGPL/HERCSAVFI) TEXT('Hercules IFS Objects')";
 system -v "CLRSAVF FILE(QGPL/HERCSAVFI)";
-system -v "CRTSAVF FILE(QGPL/HERCSAVF) TEXT('Hercules')";
+system -v "CRTSAVF FILE(QGPL/HERCSAVF) TEXT('Hercules Library Objects')";
 system -v "CLRSAVF FILE(QGPL/HERCSAVF)";
 
 # Add objects to child save files
