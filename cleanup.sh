@@ -1,7 +1,7 @@
 #!/QOpenSys/pkgs/bin/bash
 
 # Delete build directory
-rm -rf /usr/local/hercules-test
+rm -rf /usr/local/k3s/utilities/hercules-test
 
 # Delete save files
 system "DLTOBJ OBJ(QGPL/HERCSAVFI) OBJTYPE(*FILE)";
