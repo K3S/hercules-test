@@ -90,6 +90,7 @@ final class BenchmarkCommand extends Command
 
         for ($i = 0; $i <= 15; $i++) {
             $this->insertData();
+            $this->output->writeLn('Completed ' . $this->numberOfProgramCalls . ' program calls...');
         }
 
         // Record end time
