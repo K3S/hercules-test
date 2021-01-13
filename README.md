@@ -19,7 +19,7 @@ RSTOBJ OBJ(*ALL) SAVLIB(QGPL) DEV(*SAVF) SAVF(QGPL/HERCSAVF) MBROPT(*ALL) ALWOBJ
 RSTLIB SAVLIB(HERC) DEV(*SAVF) SAVF(QGPL/HERCSAVFL) MBROPT(*ALL) ALWOBJDIF(*ALL) RSTLIB(HERC)
 CRTDIR DIR('/usr/local')
 CRTDIR DIR('/usr/local/hercules-test')
-RST DEV('/qsys.lib/qgpl.lib/hercsavfi.file') OBJ(('/usr/local/k3s' *INCLUDE '/path/to/install'))
+RST DEV('/qsys.lib/qgpl.lib/hercsavfi.file') OBJ(('/usr/local' *INCLUDE '/path/to/install'))
 ```
 For the last command, your `/path/to/install` should be the absolute path to the directory that you want to contain hercules-test.
 
