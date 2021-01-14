@@ -5,6 +5,12 @@ How much can you lift?
 ### Download Save File
 Download the save file from [this page](https://github.com/K3S/hercules-test/releases).
 
+### Create the Empty Save File
+On your IBM i, run this command to create an empty save file
+```
+CRTSAVF FILE(QGPL/HERCSAVF) TEXT('Hercules Test Save File')
+```
+
 ### FTP Save File to server
 ```
 $ ftp <server ip>
@@ -45,6 +51,7 @@ If you don't have shell access, you can run the IBM i command
 ```
 HERC/HERCULES IFSPATH('/usr/local/hercules-test') OUTPUTF('/tmp/hercules.log') DBUSER(MYUSER) DBPWD(MYPASS)         
 ```
+This will place the output in the `hercules.log` file where you'll be able to view the test results.
 
 ## N.B. Database and Toolkit configuration
 If you need to make configuration changes to the database connection or the toolkit, you can edit the top section of /usr/local/hercules-test/console.php.
