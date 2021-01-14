@@ -13,15 +13,27 @@ $ put HERCSAVF.SAVF
 ```
 
 ### Restore objects from save files
-Run these commands from the IBM i command line to install the application:
+Run these commands from the IBM i command line to install the application.
+
+First, restore the two save files. One contains library objects (HERCSAVFL) and the other objects (HERCSAVFI). This command extracts those two save files from HERCSAVF.
 ```
 RSTOBJ OBJ(*ALL) SAVLIB(QGPL) DEV(*SAVF) SAVF(QGPL/HERCSAVF) MBROPT(*ALL) ALWOBJDIF(*ALL) RSTLIB(QGPL)
+```
+
+This command extracts the library objects into library `HERC`.
+```
 RSTLIB SAVLIB(HERC) DEV(*SAVF) SAVF(QGPL/HERCSAVFL) MBROPT(*ALL) ALWOBJDIF(*ALL) RSTLIB(HERC)
-CRTDIR DIR('/usr/local')
-CRTDIR DIR('/usr/local/hercules-test')
+```
+
+This command ensures that there is a directory to restore the IFS objects into. For this command, your `/path/to/install` should be the directory that you want to install hercules within. Thus `/path/to/install` will be the parent directory (e.g., `/usr/local`). And you'll want to append `hercules-test` onto the end (e.g., `/usr/local/hercules-test`).
+```
+CRTDIR DIR('/path/to/install/hercules-test')
+```
+
+This command restores the IFS objects into the directory created above. For this command, your `/path/to/install` should again be the parent directory of the hercules IFS objects (e.g. `/usr/local`).
+```
 RST DEV('/qsys.lib/qgpl.lib/hercsavfi.file') OBJ(('/usr/local' *INCLUDE '/path/to/install'))
 ```
-For the last command, your `/path/to/install` should be the absolute path to the directory that you want to contain hercules-test.
 
 # Running the test
 If you have shell access, you can run the php console command directly
