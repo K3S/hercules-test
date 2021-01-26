@@ -12,8 +12,8 @@ use Laminas\ServiceManager\ServiceManager;
 use Symfony\Component\Console\Application;
 use ToolkitApi\Toolkit;
 
-$username = $_SERVER['HERC_USER'];
-$password = $_SERVER['HERC_PWD'];
+$username = $argv[2];
+$password = $argv[3];
 
 $databaseConfig = [
     'dsn' => 'odbc:DSN=*LOCAL;UID=' . $username . ';PWD=' . $password . ';DBQ=, QTEMP QGPL HERC;NAM=1;CMT=1;',

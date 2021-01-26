@@ -9,8 +9,7 @@
 
              DCL       VAR(&CMND) TYPE(*CHAR) LEN(600)
 
-             CHGVAR    VAR(&PHP) VALUE('HERC_USER=' *CAT %TRIM(&DBUSER) *BCAT 'HERC_PWD=' *CAT %TRIM(&DBPWD) *BCAT &PHP)
-             CHGVAR    VAR(&CMND) VALUE(%TRIM(&PHP) *BCAT %TRIM(&IFSPATH) *CAT '/console.php app:benchmark >' *BCAT %TRIM(&OUTF)) 
+             CHGVAR    VAR(&CMND) VALUE(%TRIM(&PHP) *BCAT %TRIM(&IFSPATH) *CAT '/console.php app:benchmark' *BCAT %TRIM(&DBUSER) *BCAT %TRIM(&DBPWD) *CAT '>' *BCAT %TRIM(&OUTF))
 
              STRQSH    CMD(&CMND)
 
