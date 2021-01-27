@@ -34,11 +34,6 @@ This will extract the library objects into library `HERC`.
 RSTLIB SAVLIB(HERC) DEV(*SAVF) SAVF(QGPL/HERCSAVFL) MBROPT(*ALL) ALWOBJDIF(*ALL) RSTLIB(HERC)
 ```
 
-Next we will want to create the directory that we will restore the IFS objects into. Your `/<path*to*application>` should be where you want the Herecules directory installed (e.g., `/usr/local`). Our application will reside in `hercules-test` directory added onto the end (e.g., `/usr/local/hercules-test`).
-```
-CRTDIR DIR('/<path*to*application>/hercules-test')
-```
-
 Last, this will restore the IFS objects into the directory created above. For this command, your `/<path*to*application>` should again be the parent directory of the hercules IFS objects (e.g. `/usr/local`), but you do not need to add `/herculues-test` to the end. 
 ```
 RST DEV('/qsys.lib/qgpl.lib/hercsavfi.file') OBJ(('/usr/local' *INCLUDE '/<path*to*application>'))
