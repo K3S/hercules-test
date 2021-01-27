@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Console;
 
-use Interop\Container\ContainerInterface;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Adapter\Driver\Pdo\Result;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use ToolkitApi\Toolkit;
@@ -40,36 +40,22 @@ final class BenchmarkCommand extends Command
      */
     private $numberOfProgramCalls = 0;
 
-    /**
-     * BenchmarkCommand constructor.
-     * @param Adapter|AdapterInterface $adapter
-     * @param Toolkit|ToolkitInterface $toolkit
-     */
-    public function __construct(AdapterInterface $adapter, ToolkitInterface $toolkit)
-    {
-        $this->adapter = $adapter;
-        $this->toolkit = $toolkit;
-
-        parent::__construct();
-    }
-
-    /**
-     * @param ContainerInterface $container
-     * @return static
-     */
-    public static function fromContainer(ContainerInterface $container): self
-    {
-        return new self(
-            $container->get(Adapter::class),
-            $container->get(Toolkit::class)
-        );
-    }
 
     public function configure()
     {
         $this->setName('app:benchmark')
             ->setDescription('Runs a benchmark test to measure PHP API call performance')
             ->setHelp('This command allows you to measure the performance of an API call from PHP');
+
+        $this->addArgument(
+            'username',
+        InputArgument::REQUIRED,
+        'What is the database user profile?');
+
+        $this->addArgument(
+            'password',
+            InputArgument::REQUIRED,
+            'What is the database password?');
 
         parent::configure();
     }
@@ -83,6 +69,13 @@ final class BenchmarkCommand extends Command
     {
         $this->input = $input;
         $this->output = $output;
+
+        // Build database adapter and toolkit objects
+        $username = $input->getArgument('username');
+        $password = $input->getArgument('password');
+        $adapterConfig = $this->getAdapterConfig($username, $password);
+        $this->adapter = new Adapter($adapterConfig);
+        $this->toolkit = $this->getToolkitObject();
 
         // Record start time
         $startTime = microtime(true);
@@ -152,5 +145,44 @@ final class BenchmarkCommand extends Command
     private function cleanUp()
     {
         $this->runSQL("DELETE FROM HERC.LIFTING");
+    }
+
+    /**
+     * @param string $username
+     * @param string $password
+     * @return array
+     */
+    private function getAdapterConfig(string $username, string $password): array
+    {
+        return array_merge(require __DIR__ . '/../config/database.php', [
+            'username' => $username,
+            'password' => $password,
+        ]);
+    }
+
+    /**
+     * @return array
+     */
+    private function getToolkitConfig(): array
+    {
+        return require __DIR__ . '/../config/toolkit.php';
+    }
+
+    /**
+     * @return ToolkitInterface
+     * @throws \Exception
+     */
+    private function getToolkitObject(): ToolkitInterface
+    {
+        $toolkit = new Toolkit(
+            $this->adapter->getDriver()->getConnection()->getResource(),
+            null,
+            null,
+            'pdo'
+        );
+
+        $toolkit->setOptions($this->getToolkitConfig());
+
+        return $toolkit;
     }
 }

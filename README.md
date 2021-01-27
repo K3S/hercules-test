@@ -60,7 +60,8 @@ The test results will be stored in `/tmp/hercules.log`.
 
 # How to interpret the results
 
-We need an explanation here
+You can then view the results of the benchmark test by running this command from the IBM i command line:
+``````
 
 ## N.B. Database and Toolkit configuration
 If you need to make configuration changes to the database connection or the toolkit, you can edit the top section of /usr/local/hercules-test/console.php.
