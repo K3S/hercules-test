@@ -40,6 +40,16 @@ final class BenchmarkCommand extends Command
      */
     private $numberOfProgramCalls = 0;
 
+    /**
+     * @var \DateTimeInterface
+     */
+    private $startTime;
+
+    /**
+     * @var string
+     */
+    private $duration;
+
 
     public function configure()
     {
@@ -56,6 +66,13 @@ final class BenchmarkCommand extends Command
             'password',
             InputArgument::REQUIRED,
             'What is the database password?');
+
+        $this->addArgument(
+            'duration',
+            InputArgument::OPTIONAL,
+            'For how many seconds would you like the test to run?',
+            '60'
+        );
 
         parent::configure();
     }
@@ -77,29 +94,34 @@ final class BenchmarkCommand extends Command
         $this->adapter = new Adapter($adapterConfig);
         $this->toolkit = $this->getToolkitObject();
 
+        $this->duration = $input->getArgument('duration');
+
         // Record start time
-        $startTime = microtime(true);
-        $this->output->writeln('Start time: ' . $startTime);
+        $this->startTime = new \DateTimeImmutable();
+        $this->output->writeln('Start time: ' . $this->startTime->format('m/d/Y H:i:s'));
+        $this->output->writeLn('The test will run for ' . $this->duration . ' seconds');
 
-        for ($i = 0; $i <= 15; $i++) {
-            $this->insertData();
-            $this->output->writeLn('Completed ' . $this->numberOfProgramCalls . ' program calls...');
-        }
-
-        // Record end time
-        $endTime = microtime(true);
-        $this->output->writeln('End time: ' . $endTime);
-
-        // Calculate total duration in seconds
-        $duration = bcsub((string)$endTime, (string)$startTime, 25);
-        $this->output->writeln("Duration was $duration seconds");
+        $this->insertData();
+        $this->output->writeLn('Completed ' . $this->numberOfProgramCalls . ' program calls...');
 
         // Calculate average duration (seconds per program call)
-        $averageDuration = bcdiv($duration, (string)$this->numberOfProgramCalls, 25);
+        $averageDuration = bcdiv($this->duration, (string)$this->numberOfProgramCalls, 5);
         $this->output->writeLn("Average duration was $averageDuration seconds");
         $this->output->writeln("Number of program calls: " . $this->numberOfProgramCalls);
 
         return self::SUCCESS;
+    }
+
+    /**
+     * @param \DateTimeInterface $from
+     * @param \DateTimeInterface $to
+     * @return string
+     */
+    private function getInterval(\DateTimeInterface $from, \DateTimeInterface $to): string
+    {
+        return number_format(
+            strtotime($to->format('Y-m-d H:i:s')) - strtotime($from->format('Y-m-d H:i:s'))
+        );
     }
 
     private function insertData()
@@ -108,17 +130,23 @@ final class BenchmarkCommand extends Command
 
         // Get test data to insert
         $lifters = $this->getLifters();
-        $liftWeight = 80;
+        $liftWeight = 123;
 
-        // Call program once per lifter/row
-        foreach ($lifters as $lifter) {
+        // Call program for specified duration
+        $lifterIndex = 0;
+        for ($difference = 0; $difference <= $this->duration; $difference = $this->getInterval($this->startTime, new \DateTimeImmutable())) {
+
             $this->toolkit->pgmCall('HERC_C', 'HERC', [
-                $this->toolkit->AddParameterChar('both', 25, 'Lifter', 'LIFTER', $lifter),
-                $this->toolkit->AddParameterPackDec('both', 3, 0, 'Lift Weight', 'LIFT_WGT', $liftWeight++),
-                $this->toolkit->AddParameterChar('both', 14, 'Lift Time', 'LIFT_TIME', (new \DateTime('now'))->format('Y-m-d H:i:s'))
+                $this->toolkit->AddParameterChar('both', 25, 'Lifter', 'LIFTER', $lifters[$lifterIndex]),
+                $this->toolkit->AddParameterPackDec('both', 3, 0, 'Lift Weight', 'LIFT_WGT', $liftWeight),
+                $this->toolkit->AddParameterChar('both', 19, 'Lift Time', 'LIFT_TIME', (new \DateTime('now'))->format('Y-m-d H:i:s'))
             ]);
 
             $this->numberOfProgramCalls++;
+            $lifterIndex++;
+            if ($lifterIndex > count($lifters)) {
+                $lifterIndex = 0;
+            }
         }
     }
 
